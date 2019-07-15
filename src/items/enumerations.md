@@ -69,7 +69,7 @@ an `isize` value. However, the compiler is allowed to use a smaller type (or
 another means of distinguishing variants) in its actual memory layout.
 
 If the [primitive representation] or the [`C` representation] is used, the
-leading bytes of a variant (e.g., two bytes if `#[repr(u16)]` is used), will
+leading bytes of a variant (for example, two bytes if `#[repr(u16)]` is used), will
 correspond exactly to the discriminant.
 
 ### Assigning Discriminant Values
@@ -95,7 +95,7 @@ enum Enum {
 </li>
 <li>
 
-if a [primitive representation] is used; e.g.:
+if a [primitive representation] is used. For example:
 
 ```rust
 # #![feature(arbitrary_enum_discriminant)]
