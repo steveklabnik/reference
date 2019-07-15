@@ -357,7 +357,7 @@ used with any other representation.
 [`size_of`]: ../std/mem/fn.size_of.html
 [`Sized`]: ../std/marker/trait.Sized.html
 [dynamically sized types]: dynamically-sized-types.html
-[C-like enumerations]:  items/enumerations.html#custom-discriminant-values-for-field-less-enumerations
+[C-like enumerations]:  items/enumerations.html#explicit-discriminants
 [zero-variant enumerations]: items/enumerations.html#zero-variant-enums
 [undefined behavior]: behavior-considered-undefined.html
 [27060]: https://github.com/rust-lang/rust/issues/27060

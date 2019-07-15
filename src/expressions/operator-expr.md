@@ -338,7 +338,7 @@ well as the following additional casts. Here `*T` means either `*const T` or
 | Type of `e`           | `U`                   | Cast performed by `e as U`       |
 |-----------------------|-----------------------|----------------------------------|
 | Integer or Float type | Integer or Float type | Numeric cast                     |
-| C-like enum           | Integer type          | Enum cast                        |
+| Field-less enum       | Integer type          | Enum cast                        |
 | `bool` or `char`      | Integer type          | Primitive to integer cast        |
 | `u8`                  | `char`                | `u8` to `char` cast              |
 | `*T`                  | `*V` where `V: Sized` \* | Pointer to pointer cast       |
