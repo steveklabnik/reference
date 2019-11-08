@@ -82,72 +82,110 @@ In this example, the module `quux` re-exports two public names defined in
 
 ## `use` Paths
 
-Paths in `use` items must start with a crate name or one of the [path
-qualifiers] `crate`, `self`, `super`, or `::`. `crate` refers to the current
-crate. `self` refers to the current module. `super` refers to the parent
-module. `::` can be used to explicitly refer to a crate, requiring an extern
-crate name to follow.
+A path in a `use` declaration must start with an identifier or one of the
+[path qualifiers] `crate`, `self`, `super`, or `::`.
 
-An example of what will and will not work for `use` items:
-<!-- Note: This example works as-is in either 2015 or 2018. -->
+If the path starts with `crate`, `self`, or `super`, it is resolved in the
+same way as any other path.
 
-```rust
-# #![allow(unused_imports)]
-use std::path::{self, Path, PathBuf};  // good: std is a crate name
-use crate::foo::baz::foobaz;    // good: foo is at the root of the crate
+If the path starts with `::` or an identifier, the resolution is different in
+different Rust editions.
 
-mod foo {
-
-    mod example {
-        pub mod iter {}
-    }
-
-    use crate::foo::example::iter; // good: foo is at crate root
-//  use example::iter;      // bad: relative paths are not allowed without `self`
-    use self::baz::foobaz;  // good: self refers to module 'foo'
-    use crate::foo::bar::foobar;   // good: foo is at crate root
-
-    pub mod bar {
-        pub fn foobar() { }
-    }
-
-    pub mod baz {
-        use super::bar::foobar; // good: super refers to module 'foo'
-        pub fn foobaz() { }
-    }
-}
-
-fn main() {}
-```
-
-> **Edition Differences**: In the 2015 edition, `use` paths also allow
-> accessing items in the crate root. Using the example above, the following
-> `use` paths work in 2015 but not 2018:
+> **Edition Differences**:
 >
-> ```rust,ignore
-> use foo::example::iter;
-> use ::foo::baz::foobaz;
+> In the 2015 edition, if a path in a `use` declaration starts with `::` or an
+> identifier, it is resolved from the crate root (as if it started with the
+> `crate` path qualifier).
+>
+> To make it possible to use a crate name in a `use` path, use an
+> [`extern crate`] declaration to place it in the crate root.
+>
+> Examples of what will and will not work in the 2015 edition:
+>
+> ```rust,edition2015
+>
+> # #![allow(unused_imports)]
+> use std::path::{self, Path, PathBuf};  // good: std is at the root of the crate
+> use crate::foo::baz::foobaz;    // good: foo is at the root of the crate
+> use foo::bar;    // good: foo is at the root of the crate
+>
+> mod foo {
+>
+>     use std::path::Path;  // good: std is at the root of the crate
+>     // use example::iter;      // bad: example is not at the root of the crate
+>     use self::baz::foobaz;  // good: self refers to module 'foo'
+>     use crate::foo::bar::foobar;   // good: foo is at the root of the crate
+>     use foo::bar::foobar as fb2; // good: foo is at the root of the crate
+>     use ::foo::bar::foobar as fb3; // good: foo is at the root of the crate
+>
+>     mod example {
+>         pub mod iter {}
+>     }
+>
+>     pub mod bar {
+>         pub fn foobar() { }
+>     }
+>
+>     pub mod baz {
+>         use super::bar::foobar; // good: super refers to module 'foo'
+>         pub fn foobaz() { }
+>     }
+> }
+>
+> fn main() {}
 > ```
 >
-> The 2015 edition does not allow use declarations to reference the [extern prelude].
-> Thus [`extern crate`] declarations are still required in 2015 to
-> reference an external crate in a use declaration. Beginning with the 2018
-> edition, use declarations can specify an external crate dependency the same
-> way `extern crate` can.
+> Beginning in the 2018 edition, a path in a `use` declaration which starts
+> with `::` is resolved from the [extern prelude] instead of the crate root.
 >
-> In the 2018 edition, if an in-scope item has the same name as an external
-> crate, then `use` of that crate name requires a leading `::` to
-> unambiguously select the crate name. This is to retain compatibility with
-> potential future changes. <!-- uniform_paths future-proofing -->
+> Also, beginning in the 2018 edition, a path in a `use` declaration which
+> starts with an identifier is resolved in the same way as any other path,
+> except that it is an error if the path has more than one possible resolution
+> (unless they resolve to the same thing); 'inner' bindings do not shadow
+> 'outer' ones.
+>
+> It is an error if the path resolves to a local variable or generic parameter.
+>
+> Examples of what will and will not work in the 2018 edition:
 >
 > ```rust,edition2018
-> // use std::fs; // Error, this is ambiguous.
-> use ::std::fs;  // Imports from the `std` crate, not the module below.
-> use self::std::fs as self_fs;  // Imports the module below.
+> # #![allow(unused_imports)]
+> mod foo {
+>     use ::std::path::Path;       // good: std is in the extern prelude
+>     use std::path::Path as P2;   // good: std is found in the extern prelude
+>     use example::iter;           // good: example is in scope
+>     use crate::foo::bar::foobar; // good: foo is at the root of the crate
+>     // use ::foo::bar::foobar;   // bad: foo is not in the extern prelude
+>     // use foo::bar::foobar;     // bad: foo is not in scope
+>
+>     mod example {
+>         pub mod iter {}
+>     }
+>
+>     pub mod bar {
+>         pub fn foobar() { }
+>     }
+> }
+>
+> fn main() {
+>     fn f() {}
+>     use f as g; // good: f is in scope
+>     let x = 3;
+>     // use x as y; // bad: local variables are not available
+> }
+> ```
+>
+> Examples for the ambiguity rule:
+> ```rust,edition2018
+> # #![allow(unused_imports)]
+> // use std::fs; // bad: this is ambiguous.
+> use ::std::fs;  // good: imports from the `std` crate, not the module below.
+> use self::std::fs as self_fs;  // good: imports the module below.
 >
 > mod std {
 >     pub mod fs {}
 > }
+>
 > # fn main() {}
 > ```
 
