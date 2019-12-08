@@ -22,10 +22,13 @@ be used as the names of:
 
 > **<sup>Lexer:<sup>**\
 > KW_AS             : `as`\
+> KW_ASYNC          : `async`\
+> KW_AWAIT          : `await`\
 > KW_BREAK          : `break`\
 > KW_CONST          : `const`\
 > KW_CONTINUE       : `continue`\
 > KW_CRATE          : `crate`\
+> KW_DYN            : `dyn` \
 > KW_ELSE           : `else`\
 > KW_ENUM           : `enum`\
 > KW_EXTERN         : `extern`\
@@ -57,12 +60,9 @@ be used as the names of:
 > KW_WHERE          : `where`\
 > KW_WHILE          : `while`
 
-The following keywords were added beginning in the 2018 edition.
+> **Edition Differences**: In the 2015 edition, `async` and `await` are not
+> keywords, and `dyn` is not a strict keyword.
 
-> **<sup>Lexer 2018+</sup>**\
-> KW_ASYNC          : `async`\
-> KW_AWAIT          : `await`\
-> KW_DYN            : `dyn`
 
 ## Reserved keywords
 
@@ -80,15 +80,15 @@ them to use these keywords.
 > KW_MACRO          : `macro`\
 > KW_OVERRIDE       : `override`\
 > KW_PRIV           : `priv`\
+> KW_TRY            : `try`\
 > KW_TYPEOF         : `typeof`\
 > KW_UNSIZED        : `unsized`\
 > KW_VIRTUAL        : `virtual`\
 > KW_YIELD          : `yield`
 
-The following keywords are reserved beginning in the 2018 edition.
+> **Edition Differences**: In the 2015 edition, `try` is not a (reserved)
+> keyword.
 
-> **<sup>Lexer 2018+</sup>**\
-> KW_TRY   : `try`
 
 ## Weak keywords
 
@@ -104,17 +104,16 @@ is possible to declare a variable or method with the name `union`.
   // error[E0262]: invalid lifetime parameter name: `'static`
   fn invalid_lifetime_parameter<'static>(s: &'static str) -> &'static str { s }
   ```
-* In the 2015 edition, [`dyn`] is a keyword when used in a type position
-  followed by a path that does not start with `::`.
-
-  Beginning in the 2018 edition, `dyn` has been promoted to a strict keyword.
 
 > **<sup>Lexer</sup>**\
 > KW_UNION          : `union`\
 > KW_STATICLIFETIME : `'static`
 >
-> **<sup>Lexer 2015</sup>**\
-> KW_DYN            : `dyn`
+
+> **Edition Differences**: In the 2015 edition, [`dyn`] is an additional weak
+> keyword: it is a keyword when used in a type position followed by a path
+> that does not start with `::`.
+
 
 [items]: items.md
 [Variables]: variables.md

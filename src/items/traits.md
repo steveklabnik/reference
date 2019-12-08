@@ -171,21 +171,12 @@ The [trait implementation] must also begin with the `unsafe` keyword.
 
 ## Parameter patterns
 
-Function or method declarations without a body only allow [IDENTIFIER] or
-`_` [wild card][WildcardPattern] patterns. `mut` [IDENTIFIER] is currently
-allowed, but it is deprecated and will become a hard error in the future.
-<!-- https://github.com/rust-lang/rust/issues/35203 -->
+In function and method declarations, the parameter pattern is required.
 
-In the 2015 edition, the pattern for a trait function or method parameter is
-optional:
+If the function or method has a body, any irrefutable pattern is allowed.
 
-```rust
-trait T {
-    fn f(i32);  // Parameter identifiers are not required.
-}
-```
-
-The kinds of patterns for parameters is limited to one of the following:
+If the function or method has no body, the pattern must have one of the
+following forms:
 
 * [IDENTIFIER]
 * `mut` [IDENTIFIER]
@@ -193,16 +184,28 @@ The kinds of patterns for parameters is limited to one of the following:
 * `&` [IDENTIFIER]
 * `&&` [IDENTIFIER]
 
-Beginning in the 2018 edition, function or method parameter patterns are no
-longer optional. Also, all irrefutable patterns are allowed as long as there
-is a body. Without a body, the limitations listed above are still in effect.
-
 ```rust,edition2018
 trait T {
     fn f1((a, b): (i32, i32)) {}
     fn f2(_: (i32, i32));  // Cannot use tuple pattern without a body.
 }
 ```
+
+`mut` [IDENTIFIER] is deprecated and will become a hard error in the future.
+<!-- https://github.com/rust-lang/rust/issues/35203 -->
+
+> **Edition Differences**: In the 2015 edition, the pattern for a trait
+> function or method parameter is optional:
+>
+> ```rust,edition2015
+> trait T {
+>     fn f(i32);  // Parameter identifiers are not required.
+> }
+> ```
+>
+> Further, the limitations on the pattern for functions or methods without a
+> body also apply to functions or methods with a body.
+
 
 [IDENTIFIER]: ../identifiers.md
 [WildcardPattern]: ../patterns.md#wildcard-pattern
