@@ -360,31 +360,106 @@ same trait object.
 
 * Numeric cast
     * Casting between two integers of the same size (e.g. i32 -> u32) is a no-op
+        ```rust
+        # #![allow(overflowing_literals)]
+        assert_eq!(42i8 as u8, 42u8);
+        assert_eq!(-1i8 as u8, 255u8);
+        assert_eq!(255u8 as i8, -1i8);
+        assert_eq!(0xffu8 as i8, 0xffi8);
+        assert_eq!(-1i16 as u16, 65535u16);
+        ```
+
     * Casting from a larger integer to a smaller integer (e.g. u32 -> u8) will
       truncate
+        ```rust
+        # #![allow(overflowing_literals)]
+        assert_eq!(42u16 as u8, 42u8);
+        assert_eq!(1234u16 as u8, 210u8);
+        assert_eq!(0xabcdu16 as u8, 0xcdu8);
+
+        assert_eq!(-42i16 as i8, -42i8);
+        assert_eq!(1234u16 as i8, -46i8);
+        assert_eq!(0xabcdi16 as i8, 0xcdi8);
+        ```
+
     * Casting from a smaller integer to a larger integer (e.g. u8 -> u32) will
         * zero-extend if the source is unsigned
         * sign-extend if the source is signed
+        ```rust
+        # #![allow(overflowing_literals)]
+        assert_eq!(42i8 as i16, 42i16);
+        assert_eq!(-17i8 as i16, -17i16);
+        assert_eq!(0b1000_1010u8 as u16, 0b0000_0000_1000_1010u16, "Zero-extend");
+        assert_eq!(0b0000_1010i8 as i16, 0b0000_0000_0000_1010i16, "Sign-extend 0");
+        assert_eq!(0b1000_1010i8 as i16, 0b1111_1111_1000_1010i16, "Sign-extend 1");
+        ```
+
     * Casting from a float to an integer will round the float towards zero
         * **[NOTE: currently this will cause Undefined Behavior if the rounded
           value cannot be represented by the target integer type][float-int]**.
           This includes Inf and NaN. This is a bug and will be fixed.
+        ```rust
+        assert_eq!(42.9f32 as i32, 42);
+        assert_eq!(-42.9f32 as i32, -42);
+        assert_eq!(42_000_000f32 as i32, 42_000_000);
+        println!("Undefined Behavior: {}", 1_000_000_000_000_000f32 as i32);
+        println!("Undefined Behavior: {}", std::f32::NEG_INFINITY as i32);
+        println!("Undefined Behavior: {}", std::f32::NAN as i32);
+        ```
+
     * Casting from an integer to float will produce the closest possible float \*
         * if necessary, rounding is according to `roundTiesToEven` mode \*\*\*
         * on overflow, infinity (of the same sign as the input) is produced
         * note: with the current set of numeric types, overflow can only happen
           on `u128 as f32` for values greater or equal to `f32::MAX + (0.5 ULP)`
+        ```rust
+        assert_eq!(1337i32 as f32, 1337f32);
+        assert_eq!(123_456_789i32 as f32, 123_456_790f32, "Rounded");
+        assert_eq!(0xffffffff_ffffffff_ffffffff_ffffffff_u128 as f32, std::f32::INFINITY);
+        ```
+
     * Casting from an f32 to an f64 is perfect and lossless
+        ```rust
+        assert_eq!(1_234.5f32 as f64, 1_234.5f64);
+        assert_eq!(std::f32::INFINITY as f64, std::f64::INFINITY);
+        assert!((std::f32::NAN as f64).is_nan());
+        ```
+
     * Casting from an f64 to an f32 will produce the closest possible f32 \*\*
         * if necessary, rounding is according to `roundTiesToEven` mode \*\*\*
         * on overflow, infinity (of the same sign as the input) is produced
+        ```rust
+        assert_eq!(1_234.5f64 as f32, 1_234.5f32);
+        assert_eq!(1_234_567_891.123f64 as f32, 1_234_567_890f32, "Rounded");
+        assert_eq!(std::f64::INFINITY as f32, std::f32::INFINITY);
+        assert!((std::f64::NAN as f32).is_nan());
+        ```
+
 * Enum cast
     * Casts an enum to its discriminant, then uses a numeric cast if needed.
+    ```rust
+    enum Enum { A, B, C }
+    assert_eq!(Enum::A as i32, 0);
+    assert_eq!(Enum::B as i32, 1);
+    assert_eq!(Enum::C as i32, 2);
+    ```
+
 * Primitive to integer cast
     * `false` casts to `0`, `true` casts to `1`
     * `char` casts to the value of the code point, then uses a numeric cast if needed.
+    ```rust
+    assert_eq!(false as i32, 0);
+    assert_eq!(true as i32, 1);
+    assert_eq!('A' as i32, 65);
+    assert_eq!('Ö' as i32, 214);
+    ```
+
 * `u8` to `char` cast
     * Casts to the `char` with the corresponding code point.
+    ```rust
+    assert_eq!(65u8 as char, 'A');
+    assert_eq!(214u8 as char, 'Ö');
+    ```
 
 \* if integer-to-float casts with this rounding mode and overflow behavior are
 not supported natively by the hardware, these casts will likely be slower than
