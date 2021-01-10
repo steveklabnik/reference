@@ -174,12 +174,15 @@ extern "C" fn new_i32() -> i32 { 0 }
 let fptr: extern "C" fn() -> i32 = new_i32;
 ```
 
-Functions with an ABI that differs from `"Rust"` do not support unwinding in the
-exact same way that Rust does. Therefore, unwinding past the end of functions
-with such ABIs causes the process to abort.
+Functions with an ABI that differs from `"Rust"` do not support unwinding in
+the exact same way that Rust does. Therefore, unwinding past the end of
+functions with such ABIs results in undefined behavior, and will differ between
+platforms and compiler editions. If you cannot guarantee this will not happen,
+you should use [`catch_unwind`] or similar to abort the program instead if
+unwinding would pass through the function.
 
-> **Note**: The LLVM backend of the `rustc` implementation
-aborts the process by executing an illegal instruction.
+> **Note**: Currently, in nightly `rustc` the LLVM backend aborts the process
+> by executing an illegal instruction. However, this is not the behavior in stable.
 
 ## Const functions
 
@@ -372,3 +375,4 @@ fn foo_oof(#[some_inert_attribute] arg: u8) {
 [`link_section`]: ../abi.md#the-link_section-attribute
 [`no_mangle`]: ../abi.md#the-no_mangle-attribute
 [built-in attributes]: ../attributes.html#built-in-attributes-index
+[`catch_unwind`]: ../../std/panic/fn.catch_unwind.html
