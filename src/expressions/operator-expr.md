@@ -73,7 +73,7 @@ let a = & & & & mut 10;
 ### Raw address-of operators
 
 Related to the borrow operators are the *raw address-of operators*, which do not have first-class syntax, but are exposed via the macros `ptr::addr_of!(expr)` and `ptr::addr_of_mut!(expr)`.
-Like with `&`/`&mut`, the expression is evaluated in place expression context.
+Like with `&`/`&mut`, the expression `expr` is evaluated in place expression context.
 The difference is that `&`/`&mut` create *references* of type `&T`/`&mut T`, while `ptr::addr_of!(expr)` creates a (const) raw pointer of type `*const T` and `ptr::addr_of_mut!(expr)` creates a mutable raw pointer of type `*mut T`.
 
 The raw address-of operators must be used whenever the place expression could evaluate to a place that is not properly aligned or does not store a valid value as determined by its type.
