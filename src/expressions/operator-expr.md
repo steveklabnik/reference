@@ -72,14 +72,14 @@ let a = & & & & mut 10;
 
 ### Raw address-of operators
 
-Related to the borrow operators are the raw address-of operators, which do not have first-class syntax, but are exposed via the macros `ptr::addr_of!(expr)` and `ptr::addr_of_mut!(expr)`.
+Related to the borrow operators are the *raw address-of operators*, which do not have first-class syntax, but are exposed via the macros `ptr::addr_of!(expr)` and `ptr::addr_of_mut!(expr)`.
 Like with `&`/`&mut`, the expression is evaluated in place expression context.
 The difference is that `&`/`&mut` create *references* of type `&T`/`&mut T`, while `ptr::addr_of!(expr)` creates a (const) raw pointer of type `*const T` and `ptr::addr_of_mut!(expr)` creates a mutable raw pointer of type `*mut T`.
 
-The raw address-of operators must be used whenever the place expression denotes a place that is not properly aligned or does not store a valid value as determined by its type.
+The raw address-of operators must be used whenever the place expression could evaluate to a place that is not properly aligned or does not store a valid value as determined by its type.
 In those situations, using a borrow operator would cause [undefined behavior] by creating an invalid reference, but a raw pointer may still be constructed using an address-of operator.
 
-**Example of creating a raw pointer to an unaligned place (through a `packed` struct):**
+The following is an example of creating a raw pointer to an unaligned place through a `packed` struct:
 
 ```rust
 use std::ptr;
@@ -96,7 +96,7 @@ let raw_f2 = ptr::addr_of!(packed.f2);
 assert_eq!(unsafe { raw_f2.read_unaligned() }, 2);
 ```
 
-**Example of creating a raw pointer to a place that does not contain a valid value:**
+The following is an example of creating a raw pointer to a place that does not contain a valid value:
 
 ```rust
 use std::{ptr, mem::MaybeUninit};
