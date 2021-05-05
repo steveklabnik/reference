@@ -89,9 +89,6 @@ Here's an example of a program which exemplifies the three cases outlined
 above:
 
 ```rust
-// This module is private, meaning that no external crate can access this
-// module. Because it is private at the root of this current crate, however, any
-// module in the crate may access any publicly visible item in this module.
 mod crate_helper_module {
 
     // This function can be used by anything in the current crate
@@ -105,17 +102,23 @@ mod crate_helper_module {
 
 // This function is "public to the root" meaning that it's available to external
 // crates linking against this one.
-pub fn public_api() {}
+pub fn public_api(rate_limit: i32) {}
+
+// This is by default private, and it isn't available to external crates.
+const MAX_RATE: i32 = 32;
 
 // Similarly to 'public_api', this module is public so external crates may look
 // inside of it.
 pub mod submodule {
-    use crate_helper_module;
-
+    use super::crate_helper_module;
+    use super::MAX_RATE;
+    use super::public_api;
+    
     pub fn my_method() {
         // Any item in the local crate may invoke the helper module's public
         // interface through a combination of the two rules above.
         crate_helper_module::crate_helper();
+        public_api(MAX_RATE);
     }
 
     // This function is hidden to any module which is not a descendant of
@@ -134,7 +137,6 @@ pub mod submodule {
         }
     }
 }
-
 # fn main() {}
 ```
 
