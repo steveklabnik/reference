@@ -7,13 +7,12 @@
 A slice is a [dynamically sized type] representing a 'view' into a sequence of
 elements of type `T`. The slice type is written as `[T]`.
 
-To use a slice type it generally has to be used behind a pointer for example
-as:
+Slice types are generally used through pointer types. For example:
 
-* `&[T]`, a 'shared slice', often just called a 'slice', it doesn't own the
-  data it points to, it borrows it.
-* `&mut [T]`, a 'mutable slice', mutably borrows the data it points to.
-* `Box<[T]>`, a 'boxed slice'
+* `&[T]`: a 'shared slice', often just called a 'slice'. It doesn't own the
+  data it points to; it borrows it.
+* `&mut [T]`: a 'mutable slice'. It mutably borrows the data it points to.
+* `Box<[T]>`: a 'boxed slice'
 
 Examples:
 
