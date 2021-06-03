@@ -125,7 +125,7 @@ implementation.
 
 A variable is initialized if it has been assigned a value and hasn't since been
 moved from. All other memory locations are assumed to be uninitialized. Only
-unsafe Rust can create such a memory without initializing it.
+unsafe Rust can create a memory location without initializing it.
 
 ### Local trait
 

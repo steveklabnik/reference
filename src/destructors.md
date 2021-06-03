@@ -154,7 +154,7 @@ temporary variable that holds the result of that expression when used in a
 [place context], unless it is [promoted].
 
 Apart from lifetime extension, the temporary scope of an expression is the
-smallest scope that contains the expression and is for one of the following:
+smallest scope that contains the expression and is one of the following:
 
 * The entire function body.
 * A statement.
@@ -246,7 +246,8 @@ loop {
 ### Constant promotion
 
 Promotion of a value expression to a `'static` slot occurs when the expression
-could be written in a constant, borrowed, and dereferencing that borrow where
+could be written in a constant and borrowed, and that borrow could be dereferenced
+where
 the expression was originally written, without changing the runtime behavior.
 That is, the promoted expression can be evaluated at compile-time and the
 resulting value does not contain [interior mutability] or [destructors] (these

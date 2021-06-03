@@ -22,7 +22,7 @@ And so on.
 The type of each field is the type of the same position in the tuple's list of types.
 
 For convenience and historical reasons, the tuple type with no fields (`()`) is often called *unit* or *the unit type*.
-It's one value is also called *unit* or *the unit value*.
+Its one value is also called *unit* or *the unit value*.
 
 Some examples of tuple types:
 

@@ -103,7 +103,7 @@ If neither of those rules apply, then the bounds on the trait are used:
 // For the following trait...
 trait Foo { }
 
-// These two are the same as Box<T> has no lifetime bound on T
+// These two are the same because Box<T> has no lifetime bound on T
 type T1 = Box<dyn Foo>;
 type T2 = Box<dyn Foo + 'static>;
 

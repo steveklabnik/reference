@@ -3,7 +3,7 @@
 A *prelude* is a collection of names that are automatically brought into scope
 of every module in a crate.
 
-These prelude names are not part of the module itself, they are implicitly
+These prelude names are not part of the module itself: they are implicitly
 queried during [name resolution]. For example, even though something like
 [`Box`] is in scope in every module, you cannot refer to it as `self::Box`
 because it is not a member of the current module.

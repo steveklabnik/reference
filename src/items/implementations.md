@@ -87,8 +87,8 @@ fn main() {
 ## Trait Implementations
 
 A _trait implementation_ is defined like an inherent implementation except that
-the optional generic type declarations is followed by a [trait] followed
-by the keyword `for`. Followed by a path to a nominal type.
+the optional generic type declarations are followed by a [trait], followed
+by the keyword `for`, followed by a path to a nominal type.
 
 <!-- To understand this, you have to back-reference to the previous section. :( -->
 
@@ -265,7 +265,7 @@ impl<'a> HasAssocType for Struct {
 
 Implementations may contain outer [attributes] before the `impl` keyword and
 inner [attributes] inside the brackets that contain the associated items. Inner
-attributes must come before any associated items. That attributes that have
+attributes must come before any associated items. The attributes that have
 meaning here are [`cfg`], [`deprecated`], [`doc`], and [the lint check
 attributes].
 
