@@ -1,7 +1,7 @@
 # Destructors
 
 When an [initialized]&#32;[variable] or [temporary] goes out of
-[scope](#drop-scopes) its *destructor* is run, or it is *dropped*. [Assignment]
+[scope](#drop-scopes), its *destructor* is run (also phrased as: "it is *dropped*"). [Assignment]
 also runs the destructor of its left-hand operand, if it's initialized. If a
 variable has been partially initialized, only its initialized fields are
 dropped.
