@@ -53,15 +53,10 @@ There are several kinds of items:
 * [implementations]
 * [`extern` blocks]
 
-Some items form an implicit scope for the declaration of sub-items. In other
-words, within a function or module, declarations of items can (in many cases)
-be mixed with the statements, control blocks, and similar artifacts that
-otherwise compose the item body. The meaning of these scoped items is the same
-as if the item was declared outside the scope &mdash; it is still a static item
-&mdash; except that the item's *path name* within the module namespace is
-qualified by the name of the enclosing item, or is private to the enclosing
-item (in the case of functions). The grammar specifies the exact locations in
-which sub-item declarations may appear.
+Items may be declared in the [root of the crate], a [module][modules], or a [statement].
+Additionally, a subset of items, called [associated items], may be declared in [traits] and [implementations].
+
+See [item scopes] for information on the scoping rules of items.
 
 [_ConstantItem_]: items/constant-items.md
 [_Enumeration_]: items/enumerations.md
@@ -83,14 +78,19 @@ which sub-item declarations may appear.
 [`extern crate` declarations]: items/extern-crates.md
 [`extern` blocks]: items/external-blocks.md
 [`use` declarations]: items/use-declarations.md
+[associated items]: items/associated-items.md
 [constant items]: items/constant-items.md
 [enumeration definitions]: items/enumerations.md
 [function definitions]: items/functions.md
 [implementations]: items/implementations.md
+[item scopes]: names/scopes.md#item-scopes
 [modules]: items/modules.md
 [paths]: paths.md
+[root of the crate]: crates-and-source-files.md
+[statement]: statements.md
 [static items]: items/static-items.md
 [struct definitions]: items/structs.md
 [trait definitions]: items/traits.md
+[traits]: items/traits.md
 [type definitions]: items/type-aliases.md
 [union definitions]: items/unions.md

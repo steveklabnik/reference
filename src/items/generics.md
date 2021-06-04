@@ -23,6 +23,7 @@ parameters are listed in angle <span class="parenthetical">brackets (`<...>`)</s
 usually immediately after the name of the item and before its definition. For
 implementations, which don't have a name, they come directly after `impl`.
 The order of generic parameters is restricted to lifetime parameters, then type parameters, and then const parameters.
+The same parameter name may not be declared more than once in a _GenericParams_ list.
 
 Some examples of items with type, const, and lifetime parameters:
 
@@ -36,6 +37,7 @@ struct InnerArray<T, const N: usize>([T; N]);
 Generic parameters are in scope within the item definition where they are
 declared. They are not in scope for items declared within the body of a
 function as described in [item declarations].
+See [generic parameter scopes] for more details.
 
 [References], [raw pointers], [arrays], [slices][arrays], [tuples], and
 [function pointers] have lifetime or type parameters as well, but are not
@@ -294,6 +296,7 @@ struct Foo<#[my_flexible_clone(unbounded)] H> {
 [functions]: functions.md
 [function pointers]: ../types/function-pointer.md
 [generic implementations]: implementations.md#generic-implementations
+[generic parameter scopes]: ../names/scopes.md#generic-parameter-scopes
 [higher-ranked lifetimes]: ../trait-bounds.md#higher-ranked-trait-bounds
 [implementations]: implementations.md
 [item declarations]: ../statements.md#item-declarations
