@@ -75,7 +75,8 @@ The following is a list of the available feature names.
 
 #### `x86` or `x86_64`
 
-This platform requires that `#[target_feature]` is only applied to [`unsafe`
+Executing code with unsupported features is UB on this platform.
+Hence this platform requires that `#[target_feature]` is only applied to [`unsafe`
 functions][unsafe function].
 
 Feature     | Implicitly Enables | Description
@@ -133,7 +134,8 @@ Feature     | Implicitly Enables | Description
 
 #### `wasm32` or `wasm64`
 
-This platform allows `#[target_feature]` to be applied to both safe and
+Executing code with unsupported features is allowed (i.e., is not UB) on this platform.
+Hence this platform allows `#[target_feature]` to be applied to both safe and
 [`unsafe` functions][unsafe function].
 
 Feature     | Description
