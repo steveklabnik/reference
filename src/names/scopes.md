@@ -257,7 +257,7 @@ Helper attributes shadow other attributes of the same name in scope.
 Although [`Self`] is a keyword with special meaning, it interacts with name resolution in a way similar to normal names.
 
 The implicit `Self` type in the definition of a [struct], [enum], [union], [trait], or [implementation] is treated similarly to a [generic parameter](#generic-parameter-scopes), and is in scope in the same way as a generic type parameter.
-For struct, enum, and unions, it is in scope starting after the generic parameters.
+For structs, enums, and unions, it is in scope starting after the generic parameters.
 For traits and implementations, it is in scope starting just before the generic parameters.
 
 The implicit `Self` constructor in the value [namespace] of an [implementation] is in scope within the body of the implementation (the implementation's [associated items]).
