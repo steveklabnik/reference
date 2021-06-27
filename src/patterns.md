@@ -177,8 +177,8 @@ for i in -2..5 {
 > _IdentifierPattern_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; `ref`<sup>?</sup> `mut`<sup>?</sup> [IDENTIFIER] (`@` [_Pattern_] ) <sup>?</sup>
 
-Identifier patterns bind the value they match to a variable. The identifier
-must be unique within the pattern. The variable will shadow any variables of
+Identifier patterns bind the value they match to a variable in the [value namespace].
+The identifier must be unique within the pattern. The variable will shadow any variables of
 the same name in scope. The scope of the new binding depends on the context of
 where the pattern is used (such as a `let` binding or a `match` arm).
 
@@ -843,3 +843,4 @@ result in a type mismatch between `x` in the different subpatterns.
 [tuples]: types/tuple.md
 [scrutinee]: glossary.md#scrutinee
 [type coercions]: type-coercions.md
+[value namespace]: names/namespaces.md

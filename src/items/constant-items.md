@@ -11,6 +11,8 @@ context when used. This includes usage of constants from external crates, and
 non-[`Copy`] types. References to the same constant are not necessarily
 guaranteed to refer to the same memory address.
 
+The constant declaration defines the constant value in the [value namespace] of the module or block where it is located.
+
 Constants must be explicitly typed. The type must have a `'static` lifetime: any
 references in the initializer must have `'static` lifetimes.
 
@@ -99,3 +101,4 @@ m!(const _: () = (););
 [_Type_]: ../types.md#type-expressions
 [_Expression_]: ../expressions.md
 [`Copy`]: ../special-types-and-traits.md#copy
+[value namespace]: ../names/namespaces.md

@@ -21,6 +21,8 @@ Two kind of item _declarations_ are allowed in external blocks: [functions] and
 [statics]. Calling functions or accessing statics that are declared in external
 blocks is only allowed in an `unsafe` context.
 
+The external block defines its functions and statics in the [value namespace] of the module or block where it is located.
+
 The `unsafe` keyword is syntactically allowed to appear before the `extern`
 keyword, but it is rejected at a semantic level. This allows macros to consume
 the syntax and make use of the `unsafe` keyword, before removing it from the
@@ -186,3 +188,4 @@ restrictions as [regular function parameters].
 [_Visibility_]: ../visibility-and-privacy.md
 [attributes]: ../attributes.md
 [regular function parameters]: functions.md#attributes-on-function-parameters
+[value namespace]: ../names/namespaces.md

@@ -30,6 +30,7 @@ nominal [enumerated type] as well as a set of *constructors*, that can be used
 to create or pattern-match values of the corresponding enumerated type.
 
 Enumerations are declared with the keyword `enum`.
+The `enum` declaration defines the enumeration type in the [type namespace] of the module or block where it is located.
 
 An example of an `enum` item and its use:
 
@@ -60,6 +61,27 @@ called an enum variant. Each enum instance has a _discriminant_ which is an
 integer associated to it that is used to determine which variant it holds. An
 opaque reference to this discriminant can be obtained with the
 [`mem::discriminant`] function.
+
+Variant constructors are similar to [struct] definitions, and can be referenced by a path from the enumeration name, including in [use declarations].
+The constructors are defined in both the [type namespace] and [value namespace] within the enumeration.
+
+A struct-like variant can be instantiated with a [struct expression].
+A tuple-like variant can be instantiated with a [call expression].
+A unit-like variant can be instantiated with a [path expression].
+For example:
+
+```rust
+enum Examples {
+    UnitLike,
+    TupleLike(i32),
+    StructLike { value: i32 },
+}
+
+use Examples::*; // Creates aliases to all variants.
+let x = UnitLike; // Path expression of the const item.
+let y = TupleLike(123); // Call expression.
+let z = StructLike { value: 123 }; // Struct expression.
+```
 
 ## Custom Discriminant Values for Fieldless Enumerations
 
@@ -171,18 +193,25 @@ enum E {
 }
 ```
 
-[IDENTIFIER]: ../identifiers.md
-[_GenericParams_]: generics.md
-[_WhereClause_]: generics.md#where-clauses
 [_Expression_]: ../expressions.md
-[_TupleFields_]: structs.md
+[_GenericParams_]: generics.md
 [_StructFields_]: structs.md
+[_TupleFields_]: structs.md
 [_Visibility_]: ../visibility-and-privacy.md
-[enumerated type]: ../types/enum.md
+[_WhereClause_]: generics.md#where-clauses
+[`C` representation]: ../type-layout.md#the-c-representation
 [`mem::discriminant`]: ../../std/mem/fn.discriminant.html
-[never type]: ../types/never.md
-[numeric cast]: ../expressions/operator-expr.md#semantics
+[call expression]: ../expressions/call-expr.md
 [constant expression]: ../const_eval.md#constant-expressions
 [default representation]: ../type-layout.md#the-default-representation
+[enumerated type]: ../types/enum.md
+[IDENTIFIER]: ../identifiers.md
+[never type]: ../types/never.md
+[numeric cast]: ../expressions/operator-expr.md#semantics
+[path expression]: ../expressions/path-expr.md
 [primitive representation]: ../type-layout.md#primitive-representations
-[`C` representation]: ../type-layout.md#the-c-representation
+[struct expression]: ../expressions/struct-expr.md
+[struct]: structs.md
+[type namespace]: ../names/namespaces.md
+[use declarations]: use-declarations.md
+[value namespace]: ../names/namespaces.md

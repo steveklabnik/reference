@@ -34,11 +34,9 @@ mod math {
 }
 ```
 
-Modules and types share the same namespace. Declaring a named type with the
-same name as a module in scope is forbidden: that is, a type definition, trait,
-struct, enumeration, union, type parameter or crate can't shadow the name of a
-module in scope, or vice versa. Items brought into scope with `use` also have
-this restriction.
+Modules are defined in the [type namespace] of the module or block where it is located.
+It is an error to define multiple items with the same name in the same namespace within a module.
+See the [scopes chapter] for more details on restrictions and shadowing behavior.
 
 The `unsafe` keyword is syntactically allowed to appear before the `mod`
 keyword, but it is rejected at a semantic level. This allows macros to consume
@@ -149,7 +147,9 @@ The built-in attributes that have meaning on a module are [`cfg`],
 [attribute]: ../attributes.md
 [items]: ../items.md
 [module path]: ../paths.md
+[scopes chapter]: ../names/scopes.md
 [the lint check attributes]: ../attributes/diagnostics.md#lint-check-attributes
+[type namespace]: ../names/namespaces.md
 
 <script>
 (function() {
