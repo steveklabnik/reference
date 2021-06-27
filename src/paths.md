@@ -1,10 +1,7 @@
 # Paths
 
-A *path* is a sequence of one or more path segments _logically_ separated by
-a namespace <span class="parenthetical">qualifier (`::`)</span>. If a path
-consists of only one segment, it refers to either an [item] or a [variable] in
-a local control scope. If a path has multiple segments, it always refers to an
-item.
+A *path* is a sequence of one or more path segments separated by `::` tokens.
+They are used to refer to [items], values, [types], [macros], and [attributes].
 
 Two examples of simple paths consisting of only identifier segments:
 
@@ -25,7 +22,7 @@ x::y::z;
 > _SimplePathSegment_ :\
 > &nbsp;&nbsp; [IDENTIFIER] | `super` | `self` | `crate` | `$crate`
 
-Simple paths are used in [visibility] markers, [attributes], [macros], and [`use`] items.
+Simple paths are used in [visibility] markers, [attributes], [macros][mbe], and [`use`] items.
 Examples:
 
 ```rust
@@ -384,8 +381,7 @@ mod without { // ::without
 [_SimplePathSegment_]: #simple-paths
 [_Type_]: types.md#type-expressions
 [literal]: expressions/literal-expr.md
-[item]: items.md
-[variable]: variables.md
+[items]: items.md
 [implementations]: items/implementations.md
 [use declarations]: items/use-declarations.md
 [IDENTIFIER]: identifiers.md
@@ -394,8 +390,10 @@ mod without { // ::without
 [expressions]: expressions.md
 [extern prelude]: names/preludes.md#extern-prelude
 [macro transcribers]: macros-by-example.md
-[macros]: macros-by-example.md
+[macros]: macros.md
+[mbe]: macros-by-example.md
 [patterns]: patterns.md
 [trait implementations]: items/implementations.md#trait-implementations
 [traits]: items/traits.md
+[types]: types.md
 [visibility]: visibility-and-privacy.md

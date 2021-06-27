@@ -174,7 +174,7 @@ active. All other attributes are inert.
 ## Tool attributes
 
 The compiler may allow attributes for external tools where each tool resides
-in its own namespace in the [tool prelude]. The first segment of the attribute
+in its own module in the [tool prelude]. The first segment of the attribute
 path is the name of the tool, with one or more additional segments whose
 interpretation is up to the tool.
 

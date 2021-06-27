@@ -5,9 +5,6 @@ into separate namespaces based on the kind of entity the name refers to.
 Namespaces allow the occurrence of a name in one namespace to not conflict
 with the same name in another namespace.
 
-Within a namespace, names are organized in a hierarchy, where each level of
-the hierarchy has its own collection of named entities.
-
 There are several different namespaces that each contain different kinds of
 entities. The usage of a name will look for the declaration of that name in
 different namespaces, based on the context, as described in the [name

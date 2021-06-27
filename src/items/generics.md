@@ -43,12 +43,8 @@ referred to with path syntax.
 
 ### Const generics
 
-*Const generic parameters* allow items to be generic over constant values. The
-const identifier introduces a name for the constant parameter, and all
-instances of the item must be instantiated with a value of the given type.
-
-<!-- TODO: update above to say "introduces a name in the [value namespace]"
-    once namespaces are added. -->
+*Const generic parameters* allow items to be generic over constant values.
+The const identifier introduces a name in the [value namespace] for the constant parameter, and all instances of the item must be instantiated with a value of the given type.
 
 The only allowed types of const parameters are `u8`, `u16`, `u32`, `u64`, `u128`, `usize`
 `i8`, `i16`, `i32`, `i64`, `i128`, `isize`, `char` and `bool`.
@@ -286,6 +282,7 @@ struct Foo<#[my_flexible_clone(unbounded)] H> {
 [arrays]: ../types/array.md
 [associated const]: associated-items.md#associated-constants
 [associated type]: associated-items.md#associated-types
+[attributes]: ../attributes.md
 [block]: ../expressions/block-expr.md
 [const contexts]: ../const_eval.md#const-context
 [const expression]: ../const_eval.md#constant-expressions
@@ -313,4 +310,4 @@ struct Foo<#[my_flexible_clone(unbounded)] H> {
 [type aliases]: type-aliases.md
 [type]: ../types.md
 [unions]: unions.md
-[attributes]: ../attributes.md
+[value namespace]: ../names/namespaces.md
