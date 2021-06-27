@@ -232,6 +232,9 @@ References to a label refer to the closest definition.
 ## Prelude scopes
 
 [Preludes] bring entities into scope of every module.
+The entities are not members of the module, but are implicitly queried during [name resolution].
+The prelude names may be shadowed by declarations in a module.
+
 The preludes are layered such that one shadows another if they contain entities of the same name.
 The order that preludes may shadow other preludes is the following where earlier entries may shadow later ones:
 
