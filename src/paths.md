@@ -206,10 +206,19 @@ fn bar() {
 
 ### `Self`
 
-`Self`, with a capital "S", is used to refer to the implementing type within
-[traits] and [implementations].
+`Self`, with a capital "S", is used to refer to the current type being implemented or defined. It may be used in the following situations:
+
+* In a [trait] definition, it refers to the type implementing the trait.
+* In an [implementation], it refers to the implementing type.
+  When implementing a tuple or unit [struct], [enumeration], or [union], it also refers to the constructor in the [value namespace].
+* In the definition of a [struct], [enumeration], or [union], it refers to the defining type.
+  The definition is not allowed to be infinitely recursive (there must be an indirection).
+
+The scope of `Self` behaves similarly to a generic parameter, see the [scopes chapter] for more details.
+<!-- TODO: update link to #self-scope once https://github.com/rust-lang/reference/pull/1040 is merged. -->
 
 `Self` can only be used as the first segment, without a preceding `::`.
+The `Self` path cannot include generic arguments (as in `Self::<i32>`).
 
 ```rust
 trait T {
@@ -230,6 +239,20 @@ impl T for S {
     fn f(&self) -> Self::Item {  // `Self::Item` is the type `i32`.
         Self::C                  // `Self::C` is the constant value `9`.
     }
+}
+
+// `Self` is in scope within the generics of a trait definition,
+// to refer to the defining type.
+trait Add<Rhs = Self> {
+    type Output;
+    // `Self` can also reference associated items of the implementing types.
+    fn add(self, rhs: Rhs) -> Self::Output;
+}
+
+struct NonEmptyList<T> {
+    head: T,
+    // A struct can reference itself (as long as it is not infinitely recursive).
+    tail: Option<Box<NonEmptyList<T>>>,
 }
 ```
 
@@ -387,13 +410,20 @@ mod without { // ::without
 [IDENTIFIER]: identifiers.md
 [`use`]: items/use-declarations.md
 [attributes]: attributes.md
+[enumeration]: items/enumerations.md
 [expressions]: expressions.md
 [extern prelude]: names/preludes.md#extern-prelude
+[implementation]: items/implementations.md
 [macro transcribers]: macros-by-example.md
 [macros]: macros.md
 [mbe]: macros-by-example.md
 [patterns]: patterns.md
+[scopes chapter]: names/scopes.md
+[struct]: items/structs.md
 [trait implementations]: items/implementations.md#trait-implementations
+[trait]: items/traits.md
 [traits]: items/traits.md
 [types]: types.md
+[union]: items/unions.md
+[value namespace]: names/namespaces.md
 [visibility]: visibility-and-privacy.md
