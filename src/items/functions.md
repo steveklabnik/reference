@@ -74,7 +74,7 @@ If the first parameter is a _SelfParam_, this indicates that the function is a
 function] in a [trait] or [implementation].
 
 A parameter with the `...` token indicates a [variadic function], and may only
-be used as the last parameter of a [external block] function. The variadic
+be used as the last parameter of an [external block] function. The variadic
 parameter may have an optional identifier, such as `args: ...`.
 
 ## Function body

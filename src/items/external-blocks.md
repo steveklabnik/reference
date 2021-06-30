@@ -17,7 +17,7 @@ External blocks provide _declarations_ of items that are not _defined_ in the
 current crate and are the basis of Rust's foreign function interface. These are
 akin to unchecked imports.
 
-Two kind of item _declarations_ are allowed in external blocks: [functions] and
+Two kinds of item _declarations_ are allowed in external blocks: [functions] and
 [statics]. Calling functions or accessing statics that are declared in external
 blocks is only allowed in an `unsafe` context.
 

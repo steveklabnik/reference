@@ -148,7 +148,7 @@ for n in 1..11 {
 assert_eq!(sum, 55);
 ```
 
-A for loop is equivalent to the following block expression.
+A `for` loop is equivalent to a `loop` expression containing a [`match` expression] as follows:
 
 <!-- ignore: expansion example -->
 ```rust,ignore
