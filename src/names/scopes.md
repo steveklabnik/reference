@@ -23,6 +23,8 @@ A [path] may be used to refer to an item in another module.
 [Associated items] are not scoped and can only be referred to by using a [path] leading from the type they are associated with.
 [Methods] can also be referred to via [call expressions].
 
+Similar to items within a module or block, it is an error to introduce an item within a trait or implementation that is a duplicate of another item in the trait or impl in the same namespace.
+
 ## Pattern binding scopes
 
 The scope of a local variable [pattern] binding depends on where it is used:

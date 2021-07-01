@@ -56,6 +56,9 @@ There are several kinds of items:
 Items may be declared in the [root of the crate], a [module][modules], or a [statement].
 Additionally, a subset of items, called [associated items], may be declared in [traits] and [implementations].
 
+Items may be defined in any order, with the exception of [`macro_rules`] which has its own scoping behavior.
+[Name resolution] of item names allows items to be defined before or after where the item is referred to in the module or block.
+
 See [item scopes] for information on the scoping rules of items.
 
 [_ConstantItem_]: items/constant-items.md
@@ -77,6 +80,7 @@ See [item scopes] for information on the scoping rules of items.
 [_Visibility_]: visibility-and-privacy.md
 [`extern crate` declarations]: items/extern-crates.md
 [`extern` blocks]: items/external-blocks.md
+[`macro_rules`]: macros-by-example.md
 [`use` declarations]: items/use-declarations.md
 [associated items]: items/associated-items.md
 [constant items]: items/constant-items.md
@@ -85,6 +89,7 @@ See [item scopes] for information on the scoping rules of items.
 [implementations]: items/implementations.md
 [item scopes]: names/scopes.md#item-scopes
 [modules]: items/modules.md
+[name resolution]: names/name-resolution.md
 [paths]: paths.md
 [root of the crate]: crates-and-source-files.md
 [statement]: statements.md
