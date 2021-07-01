@@ -99,8 +99,6 @@ A [use declaration] has named aliases that it imports into scope, but the
 introduce aliases into multiple namespaces, depending on the item kind being
 imported.
 
-<!-- TODO: describe how `use` works on the use-declarations page, and link to it here. -->
-
 ## Sub-namespaces
 
 The macro namespace is split into two sub-namespaces: one for [bang-style macros] and one for [attributes].
