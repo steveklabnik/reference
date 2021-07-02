@@ -13,7 +13,7 @@ A _use declaration_ creates one or more local name bindings synonymous with
 some other [path]. Usually a `use` declaration is used to shorten the path
 required to refer to a module item. These declarations may appear in [modules]
 and [blocks], usually at the top.
-A `use` declaration is also sometimes called an "import".
+A `use` declaration is also sometimes called an _import_ or if it is public it is a _re-export_.
 
 [path]: ../paths.md
 [modules]: modules.md
@@ -163,7 +163,8 @@ Braces can be nested, creating a tree of paths, where each grouping of segments 
 use std::collections::{BTreeSet, hash_map::{self, HashMap}};
 ```
 
-An empty brace does not import anything. `a::b::{}` is treated as `a::b::{self as _}` and `use {};` has no effect.
+An empty brace does not import anything, though the leading path is validated that it is accessible.
+<!-- This is slightly wrong, see https://github.com/rust-lang/rust/issues/61826 -->
 
 > **Edition Differences**: In the 2015 edition, paths are relative to the crate root, so an import such as `use {foo, bar};` will import the names `foo` and `bar` from the crate root, whereas starting in 2018 those names are relative to the current scope.
 
@@ -205,8 +206,9 @@ fn main() {
 }
 ```
 
-> **Note**: `self` as the first segment of a `use` path has a different meaning from `self` inside braces.
-> See [`self`] in the paths chapter for more information no the meaning of a leading `self`.
+> **Note**: `self` may also be used as the first segment of a path.
+> The usage of `self` as the first segment and inside a `use` brace is logically the same; it means the current module of the parent segment, or the current module if there is no parent segment.
+> See [`self`] in the paths chapter for more information on the meaning of a leading `self`.
 
 ## Glob imports
 
@@ -232,7 +234,7 @@ mod foo {
 ```
 
 Items and named imports are allowed to shadow names from glob imports in the same [namespace].
-That is, if there is a name already defined by another item in the same namespace, the glob import will skip it.
+That is, if there is a name already defined by another item in the same namespace, the glob import will be shadowed.
 For example:
 
 ```rust

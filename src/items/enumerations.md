@@ -63,11 +63,12 @@ opaque reference to this discriminant can be obtained with the
 [`mem::discriminant`] function.
 
 Variant constructors are similar to [struct] definitions, and can be referenced by a path from the enumeration name, including in [use declarations].
-The constructors are defined in both the [type namespace] and [value namespace] within the enumeration.
+Each variant defines its type in the [type namespace], though that type cannot be used as a type specifier.
+Each variant also defines a constructor in the [value namespace].
 
 A struct-like variant can be instantiated with a [struct expression].
-A tuple-like variant can be instantiated with a [call expression].
-A unit-like variant can be instantiated with a [path expression].
+A tuple-like variant can be instantiated with a [call expression] or a [struct expression].
+A unit-like variant can be instantiated with a [path expression] or a [struct expression].
 For example:
 
 ```rust
@@ -79,7 +80,9 @@ enum Examples {
 
 use Examples::*; // Creates aliases to all variants.
 let x = UnitLike; // Path expression of the const item.
+let x = UnitLike {}; // Struct expression.
 let y = TupleLike(123); // Call expression.
+let y = TupleLike { 0: 123 }; // Struct expression using integer field names.
 let z = StructLike { value: 123 }; // Struct expression.
 ```
 

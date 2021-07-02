@@ -210,7 +210,7 @@ fn bar() {
 
 * In a [trait] definition, it refers to the type implementing the trait.
 * In an [implementation], it refers to the implementing type.
-  When implementing a tuple or unit [struct], [enumeration], or [union], it also refers to the constructor in the [value namespace].
+  When implementing a tuple or unit [struct], it also refers to the constructor in the [value namespace].
 * In the definition of a [struct], [enumeration], or [union], it refers to the defining type.
   The definition is not allowed to be infinitely recursive (there must be an indirection).
 
