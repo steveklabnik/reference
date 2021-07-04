@@ -58,19 +58,17 @@ a = Animal::Cat { name: "Spotty".to_string(), weight: 2.7 };
 In this example, `Cat` is a _struct-like enum variant_, whereas `Dog` is simply
 called an enum variant.
 
+An enum where no constructors contain fields are called a
+*<a name="field-less-enum">field-less enum</a>*.
+
 ## Discriminants
 
 Each enum instance has a _discriminant_: an integer logically associated to it
-that is used to determine which variant it holds. An opaque reference to this
-discriminant can be obtained with the [`mem::discriminant`] function.
+that is used to determine which variant it holds.
 
 Under the [default representation], the discriminant is interpreted as
 an `isize` value. However, the compiler is allowed to use a smaller type (or
 another means of distinguishing variants) in its actual memory layout.
-
-If the [primitive representation] or the [`C` representation] is used, the
-leading bytes of a variant (for example, two bytes if `#[repr(u16)]` is used), will
-correspond exactly to the discriminant.
 
 ### Assigning Discriminant Values
 
@@ -85,7 +83,6 @@ following the variant name with `=` and a [constant expression]:
 if the enumeration is "C-like" (i.e., it has no tuple or struct variants); e.g.:
 
 ```rust
-# #![feature(arbitrary_enum_discriminant)]
 enum Enum {
     Foo = 3,
     Bar = 2,
@@ -98,7 +95,6 @@ enum Enum {
 if a [primitive representation] is used. For example:
 
 ```rust
-# #![feature(arbitrary_enum_discriminant)]
 #[repr(u8)]
 enum Enum {
     Unit = 3,
@@ -165,12 +161,18 @@ enum OverflowingDiscriminantError2 {
 }
 ```
 
-### Accessing Discriminant Values
+### Accessing Discriminant
+
+#### Via `mem::discriminant`
+
+[`mem::discriminant`] returns an opaque reference to the discriminant of
+an enum value which can be compared. This cannot be used to get the value
+of the discriminant. 
 
 #### Casting
 
-If there is no data attached to *any* of the variants of an enumeration, then
-the discriminant can be directly accessed with a [numeric cast]; e.g.:
+If an enumeration is fieldless, then its discriminant can be directly
+accessed with a [numeric cast]; e.g.:
 
 ```rust
 enum Enum {
