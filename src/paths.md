@@ -252,7 +252,7 @@ trait Add<Rhs = Self> {
 struct NonEmptyList<T> {
     head: T,
     // A struct can reference itself (as long as it is not infinitely recursive).
-    tail: Option<Box<NonEmptyList<T>>>,
+    tail: Option<Box<Self>>,
 }
 ```
 
