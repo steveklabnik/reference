@@ -211,6 +211,23 @@ a statically linked binary on MSVC you would execute:
 RUSTFLAGS='-C target-feature=+crt-static' cargo build --target x86_64-pc-windows-msvc
 ```
 
+## Mixed Rust and foreign codebases
+
+If you are mixing Rust with foreign code (e.g. C, C++) and wish to make a single
+binary containing both types of code, you have two approaches for the final
+binary link:
+
+* Use `rustc`. Pass any non-Rust libraries using `-L <directory>` and `-l<library>`
+  rustc arguments, and/or `#[link]` directives in your Rust code. If you need to
+  link against `.o` files you can use `-Clink-arg=file.o`.
+* Use your foreign linker. In this case, you first need to generate a Rust `staticlib`
+  target and pass that into your foreign linker invocation. If you need to link
+  multiple Rust subsystems, you will need to generate a _single_ `staticlib`
+  perhaps using lots of `extern crate` statements to include multiple Rust `rlib`s.
+  Multiple Rust `staticlib` files are likely to conflict.
+
+Passing `rlib`s directly into your foreign linker is currently unsupported.
+
 [`cfg` attribute `target_feature` option]: conditional-compilation.md#target_feature
 [configuration option]: conditional-compilation.md
 [procedural macros]: procedural-macros.md
