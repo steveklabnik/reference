@@ -97,6 +97,7 @@
     - [Type coercions](type-coercions.md)
     - [Destructors](destructors.md)
     - [Lifetime elision](lifetime-elision.md)
+    - [Inferring Outlive Requirements](inferring-outlive-requirements.md)
 
 - [Special types and traits](special-types-and-traits.md)
 
