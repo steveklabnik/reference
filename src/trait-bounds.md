@@ -117,6 +117,93 @@ fn f<'a, 'b>(x: &'a i32, mut y: &'b i32) where 'a: 'b {
 `T: 'a` means that all lifetime parameters of `T` outlive `'a`.
 For example, if `'a` is an unconstrained lifetime parameter, then `i32: 'static` and `&'static str: 'a` are satisfied, but `Vec<&'a ()>: 'static` is not.
 
+In the following text, the words "inferred" and "implied" refer to similar lifetime bounds that may be omitted.
+These different words appear in different contexts in existing documentation, due to implementation details.
+From the programmer's perspective, they both refer to a category of lifetime bounds that are not required to be explicitly written because the compiler can derive them from other information.
+
+For functions and trait implementations, some lifetime bounds are implied because inputs to functions and trait implementations are assumed to be well-formed.
+For the purposes of determining implied bounds on functions, both the function parameter types and the function return type are considered to be inputs.
+
+For example, for a function parameter `x: &'a T` to be well-formed, `T: 'a` must be satisfied (referents must outlive any references to them), so it is not necessary to explicitly write that lifetime bound on the function definition.
+On the other hand, removing the bound `where 'a: 'b` from the above example results in an error, because the constructed reference type exists only in the function body and is not among the inputs to `f`:
+
+```rust,compile_fail
+fn f<'a, 'b>(x: &'a i32, mut y: &'b i32) {
+    // This is NOT well formed, because the bound `'a: 'b` is missing;
+    // therefore, `&'b &'a i32` could possibly outlive `&'a i32`.
+    let r: &'b &'a i32 = &&0;   // error
+}
+```
+
+For the purpose of determining implied bounds on trait implementations, the implementing type (the `T` in `impl Trait for T`) is considered to be an input, as are generic parameters on the trait definition.
+Parameters of the trait implementation, which come directly after the `impl` keyword, are not otherwise considered to be inputs.
+For example, for the `Vec<T>` implementation below, `'a` and `Vec<T>` are inputs to the trait, but `T` and `&'a T` are not:
+
+```rust
+trait MakeRef<'a> { type Type; }
+
+impl<'a, T> MakeRef<'a> for Vec<T>
+    where T: 'a     // Required because `&'a T` is not an input to the trait
+{
+    type Type = &'a T;
+}
+
+// `T: 'a` is implied: `&'a T` (implementing type) is an input to the trait
+impl<'a, T> MakeRef<'a> for &'a T {
+    type Type = &'a T;
+}
+```
+
+For struct definitions, certain lifetime bounds are inferred due to requirements for the types of struct fields to be well-formed.
+These inferred lifetime bounds do not have to be explicitly written on the struct definition.
+
+For example, a struct containing a field with a reference such as `&'a T` must satisfy `T: 'a` to be well-formed:
+
+```rust
+struct RefToSlice1<'a, T>(&'a [T]);             // inferred
+struct RefToSlice2<'a, T>(&'a [T]) where T: 'a; // explicit
+// References to references have additional requirements that can be inferred.
+struct DoubleRef1<'a, 'b, T>(&'a &'b T);                        // inferred
+struct DoubleRef2<'a, 'b, T>(&'a &'b T) where 'b: 'a, T: 'b;    // explicit
+```
+
+A reference to a struct such as `Bar<'a, T>` can also result in inferred lifetime bounds derived from the definition of `Bar`.
+The explicit `T: 'a` bound in the `where` clause on `Bar` causes the bound `U: 'b` to be inferred on `Foo1`:
+
+```rust
+struct Foo1<'b, U>(Bar<'b, U>);             // inferred
+struct Foo2<'b, U>(Bar<'b, U>) where U: 'b; // explicit
+
+struct Bar<'a, T>(&'a (), T) where T: 'a;
+```
+
+For associated type references such as `<T as MakeRef<'a>>::Type`, only `T` itself is checked to be well-formed, and no lifetime bounds are inferred based on the lifetime requirements of the associated type `MakeRef<'a>::Type`.
+An explicit bound is still required to ensure that any lifetime requirements of the associated type are met:
+
+```rust
+trait MakeRef<'a> { type Type; }
+
+impl<'a, T> MakeRef<'a> for Vec<T>
+    where T: 'a
+{
+    type Type = &'a T;
+}
+
+struct UsesMakeRef<'a, T>
+    where T: 'a   // Not inferred: only `Vec<T>` is checked to be well-formed
+{
+    foo: <Vec<T> as MakeRef<'a>>::Type
+}
+```
+
+In contrast, `<T as Iterator>::Item: 'a` is inferred below, because `'a` is part of the type of the reference, not part of the associated type `<T as Iterator>::Item`:
+
+```rust
+struct RefAssocType1<'a, T: Iterator>(&'a T::Item);     // inferred
+struct RefAssocType2<'a, T: Iterator>(&'a T::Item)
+    where <T as Iterator>::Item: 'a;                    // explicit
+```
+
 ## Higher-ranked trait bounds
 
 > _ForLifetimes_ :\
