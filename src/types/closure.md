@@ -75,14 +75,15 @@ In the case where a path and one of the ancestor’s of that path are both captu
 
 Note that this might need to be applied recursively.
 
-```rust=
-let s = String::new("S");
-let t = (s, String::new("T"));
-let mut u = (t, String::new("U"));
+```rust
+# fn move_value<T>(_: T){}
+let s = String::from("S");
+let t = (s, String::from("T"));
+let mut u = (t, String::from("U"));
 
 let c = || {
     println!("{:?}", u); // u captured by ImmBorrow
-    u.0.truncate(0); // u.0 captured by MutBorrow
+    u.1.truncate(0); // u.0 captured by MutBorrow
     move_value(u.0.0); // u.0.0 captured by ByValue
 };
 ```
@@ -105,7 +106,7 @@ let c = || match x {
 
 ### Capturing references in move contexts
 
-Rust doesn't allow moving fields out of references. As a result, in the case of move closures, when values accessed through a shared references are moved into the closure body, the compiler, instead of moving the values out of the reference, would reborrow the data.
+Moving fields out of references is not allowed. As a result, in the case of move closures, when values accessed through a shared references are moved into the closure body, the compiler, instead of moving the values out of the reference, would reborrow the data.
 
 ```rust
 struct T(String, String);
@@ -116,7 +117,7 @@ let c = move || t.0.truncate(0); // closure captures (&mut t.0)
 ```
 
 ### Raw pointer dereference
-In Rust, it's `unsafe` to dereference a raw pointer. Therefore, closures will only capture the prefix of a path that runs up to, but not including, the first dereference of a raw pointer.
+Because it is `unsafe` to dereference a raw pointer, closures will only capture the prefix of a path that runs up to, but not including, the first dereference of a raw pointer.
 
 ```rust,
 struct T(String, String);
@@ -131,7 +132,7 @@ let c = || unsafe {
 
 ### Reference into unaligned `struct`s
 
-In Rust, it's `unsafe` to hold references to unaligned fields in a structure, and therefore, closures will only capture the prefix of the path that runs up to, but not including, the first field access into an unaligned structure.
+Because it is `unsafe` to hold references to unaligned fields in a structure, closures will only capture the prefix of the path that runs up to, but not including, the first field access into an unaligned structure.
 
 ```rust
 #[repr(packed)]
@@ -146,9 +147,12 @@ let c = || unsafe {
 
 ### `Box` vs other `Deref` implementations
 
-The compiler treats the implementation of the Deref trait for `Box` differently, as it is considered a special entity.
+The implementation of the [`Deref`] trait for [`Box`] is treated differently from other `Deref` implementations, as it is considered a special entity.
 
 For example, let us look at examples involving `Rc` and `Box`. The `*rc` is desugared to a call to the trait method `deref` defined on `Rc`, but since `*box` is treated differently by the compiler, the compiler is able to do precise capture on contents of the `Box`.
+
+[`Box`]: ../special-types-and-traits.md#boxt
+[`Deref`]: ../special-types-and-traits.md#deref-and-derefmut
 
 #### Non `move` closure
 
@@ -336,7 +340,7 @@ f(Closure { rect: rect });
 
 ## Capture precision difference
 
-Composite types such as structs, tuples, and enums are always captured in its intirety,
+Composite types such as structs, tuples, and enums are always captured in its entirety,
 not by individual fields. As a result, it may be necessary to borrow into a local variable in order to capture a single field:
 
 ```rust
