@@ -153,16 +153,21 @@ which must be _escaped_ by a preceding `U+005C` character (`\`).
 Line-breaks are allowed in string literals. A line-break is either a newline
 (`U+000A`) or a pair of carriage return and newline (`U+000D`, `U+000A`). Both
 byte sequences are normally translated to `U+000A`, but as a special exception,
-when an unescaped `U+005C` character (`\`) occurs immediately before the
-line-break, then the `U+005C` character, the line-break, and all whitespace at the
-beginning of the next line are ignored. Thus `a` and `b` are equal:
+when an unescaped `U+005C` character (`\`) occurs immediately before a line
+break, then the line break character(s), and all immediately following
+` ` (`U+0020`), `\t` (`U+0009`), `\n` (`U+000A`) and `\r` (`U+0000D`) characters
+are ignored. Thus `a`, `b` and `c` are equal:
 
 ```rust
 let a = "foobar";
 let b = "foo\
          bar";
+let c = "foo\
 
-assert_eq!(a,b);
+     bar";
+
+assert_eq!(a, b);
+assert_eq!(b, c);
 ```
 
 #### Character escapes
