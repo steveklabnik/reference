@@ -13,6 +13,7 @@ A _use declaration_ creates one or more local name bindings synonymous with
 some other [path]. Usually a `use` declaration is used to shorten the path
 required to refer to a module item. These declarations may appear in [modules]
 and [blocks], usually at the top.
+A `use` declaration is also sometimes called an _import_ or if it is public it is a _re-export_.
 
 [path]: ../paths.md
 [modules]: modules.md
@@ -21,7 +22,7 @@ and [blocks], usually at the top.
 Use declarations support a number of convenient shortcuts:
 
 * Simultaneously binding a list of paths with a common prefix, using the
-  glob-like brace syntax `use a::b::{c, d, e::f, g::h::i};`
+  brace syntax `use a::b::{c, d, e::f, g::h::i};`
 * Simultaneously binding a list of paths with a common prefix and their common
   parent module, using the `self` keyword, such as `use a::b::{self, c, d::e};`
 * Rebinding the target name as a new local name, using the syntax `use p::q::r
@@ -85,75 +86,188 @@ In this example, the module `quux` re-exports two public names defined in
 
 ## `use` Paths
 
-> **Note**: This section is incomplete.
+The [paths] that are allowed in a `use` item follow the [_SimplePath_] grammar and are similar to the paths that may be used in an expression.
+They may create bindings for:
 
-Some examples of what will and will not work for `use` items:
-<!-- Note: This example works as-is in either 2015 or 2018. -->
+* Nameable [items]
+* [Enum variants]
+* [Built-in types]
+* [Attributes]
+* [Derive macros]
+
+They cannot import [associated items], [generic parameters], [local variables], paths with [`Self`], or [tool attributes]. More restrictions are described below.
+
+`use` will create bindings for all [namespaces] from the imported entities, with the exception of a `self` import (described below) which only imports the type namespace.
+For example, the following illustrates creating bindings for the same name in two namespaces:
 
 ```rust
-# #![allow(unused_imports)]
-use std::path::{self, Path, PathBuf};  // good: std is a crate name
-use crate::foo::baz::foobaz;    // good: foo is at the root of the crate
-
-mod foo {
-
-    pub mod example {
-        pub mod iter {}
-    }
-
-    use crate::foo::example::iter; // good: foo is at crate root
-//  use example::iter;      // bad in 2015 edition: relative paths are not allowed without `self`; good in 2018 edition
-    use self::baz::foobaz;  // good: self refers to module 'foo'
-    use crate::foo::bar::foobar;   // good: foo is at crate root
-
-    pub mod bar {
-        pub fn foobar() { }
-    }
-
-    pub mod baz {
-        use super::bar::foobar; // good: super refers to module 'foo'
-        pub fn foobaz() { }
-    }
+mod stuff {
+    pub struct Foo(pub i32);
 }
 
-fn main() {}
+// Imports the `Foo` type and the `Foo` constructor.
+use stuff::Foo;
+
+fn example() {
+    let ctor = Foo;  // From value namespace
+    let x: Foo = ctor(123);
+}
 ```
 
-> **Edition Differences**: In the 2015 edition, `use` paths also allow
-> accessing items in the crate root. Using the example above, the following
-> `use` paths work in 2015 but not 2018:
+> **Edition Differences**: In the 2015 edition, `use` paths are relative from the crate root.
+> For example:
 >
 > ```rust,edition2015
-> # mod foo {
-> #     pub mod example { pub mod iter {} }
-> #     pub mod baz { pub fn foobaz() {} }
-> # }
-> use foo::example::iter;
-> use ::foo::baz::foobaz;
+> mod foo {
+>     pub mod example { pub mod iter {} }
+>     pub mod baz { pub fn foobaz() {} }
+> }
+> mod bar {
+>     // Resolves `foo` from the crate root.
+>     use foo::example::iter;
+>     // :: prefix explicitly resolves `foo` from the crate root.
+>     use ::foo::baz::foobaz;
+> }
+>
 > # fn main() {}
 > ```
 >
 > The 2015 edition does not allow use declarations to reference the [extern prelude].
-> Thus [`extern crate`] declarations are still required in 2015 to
-> reference an external crate in a use declaration. Beginning with the 2018
-> edition, use declarations can specify an external crate dependency the same
-> way `extern crate` can.
->
-> In the 2018 edition, if an in-scope item has the same name as an external
-> crate, then `use` of that crate name requires a leading `::` to
-> unambiguously select the crate name. This is to retain compatibility with
-> potential future changes. <!-- uniform_paths future-proofing -->
->
-> ```rust
-> // use std::fs; // Error, this is ambiguous.
-> use ::std::fs;  // Imports from the `std` crate, not the module below.
-> use self::std::fs as self_fs;  // Imports the module below.
->
-> mod std {
->     pub mod fs {}
-> }
-> # fn main() {}
-> ```
+> Thus, [`extern crate`] declarations are still required in 2015 to reference an external crate in a `use` declaration.
+> Beginning with the 2018 edition, `use` declarations can specify an external crate dependency the same way `extern crate` can.
+
+## `as` renames
+
+The `as` keyword can be used to change the name of an imported entity.
+For example:
+
+```rust
+// Creates a non-public alias `bar` for the function `foo`.
+use inner::foo as bar;
+
+mod inner {
+    pub fn foo() {}
+}
+```
+
+## Brace syntax
+
+Braces can be used in the last segment of the path to import multiple entities from the previous segment or the current scope if there are no previous segments.
+Braces can be nested, creating a tree of paths, where each grouping of segments is logically combined with its parent to create a full path.
+
+```rust
+// Creates bindings to:
+// std::collections::BTreeSet
+// std::collections::hash_map
+// std::collections::hash_map::HashMap
+use std::collections::{BTreeSet, hash_map::{self, HashMap}};
+```
+
+An empty brace does not import anything, though the leading path is validated that it is accessible.
+<!-- This is slightly wrong, see https://github.com/rust-lang/rust/issues/61826 -->
+
+> **Edition Differences**: In the 2015 edition, paths are relative to the crate root, so an import such as `use {foo, bar};` will import the names `foo` and `bar` from the crate root, whereas starting in 2018 those names are relative to the current scope.
+
+## `self` imports
+
+The keyword `self` may be used in the [brace syntax](#brace-syntax) to create a binding of the parent entity under its own name.
+
+```rust
+mod stuff {
+    pub fn foo() {}
+    pub fn bar() {}
+}
+mod example {
+    // Creates a binding for `stuff` and `foo`.
+    use crate::stuff::{self, foo};
+    pub fn baz() {
+        foo();
+        stuff::bar();
+    }
+}
+# fn main() {}
+```
+
+`self` only creates a binding from the [type namespace] of the parent entity.
+For example, in the following, only the `foo` mod is imported:
+
+```rust,compile_fail
+mod bar {
+    pub mod foo {}
+    pub fn foo() {}
+}
+
+// This only imports the module `foo`. The function `foo` lives in
+// the value namespace and is not imported.
+use bar::foo::{self};
+
+fn main() {
+    foo(); // Error, `foo` is a module
+}
+```
+
+> **Note**: `self` may also be used as the first segment of a path.
+> The usage of `self` as the first segment and inside a `use` brace is logically the same; it means the current module of the parent segment, or the current module if there is no parent segment.
+> See [`self`] in the paths chapter for more information on the meaning of a leading `self`.
+
+## Glob imports
+
+The `*` character may be used as the last segment of a `use` path to import all importable entities from the entity of the preceding segment.
+For example:
+
+```rust
+// Creates a non-public alias to `bar`.
+use foo::*;
+
+mod foo {
+    fn i_am_private() {}
+    enum Example {
+        V1,
+        V2,
+    }
+    pub fn bar() {
+        // Creates local aliases to V1 and V2 of the Example enum.
+        use Example::*;
+        let x = V1;
+    }
+}
+```
+
+Items and named imports are allowed to shadow names from glob imports in the same [namespace].
+That is, if there is a name already defined by another item in the same namespace, the glob import will be shadowed.
+For example:
+
+```rust
+// This creates a binding to the `clashing::Foo` tuple struct constructor, but
+// does not import its type because that would conflict with the `Foo` struct
+// defined here.
+//
+// Note that the order of definition here is unimportant.
+use clashing::*;
+struct Foo {
+    field: f32,
+}
+
+fn do_stuff() {
+    // Uses the constructor from clashing::Foo
+    let f1 = Foo(123);
+    // The struct expression uses the type from the Foo struct defined above.
+    let f2 = Foo { field: 1.0 };
+    // Also imported from the glob import.
+    let z = Bar {};
+}
+
+mod clashing {
+    pub struct Foo(pub i32);
+    pub struct Bar {}
+}
+```
+
+`*` cannot be used as the first or intermediate segments.
+`*` cannot be used to import a module's contents into itself (such as `use self::*;`).
+
+> **Edition Differences**: In the 2015 edition, paths are relative to the crate root, so an import such as `use *;` is valid, and it means to import everything from the crate root.
+> This cannot be used in the crate root itself.
 
 ## Underscore Imports
 
@@ -199,8 +313,100 @@ m!(use std as _;);
 // use std as _;
 ```
 
-[IDENTIFIER]: ../identifiers.md
+## Restrictions
+
+The following are restrictions for valid `use` declarations.
+
+* `use crate;` must use `as` to define the name to bind the crate root to.
+* `use {self};` is an error, there must be a leading segment when using `self`.
+* As with any item definition, `use` imports cannot create duplicate bindings of the same name in the same namespace in a module or block.
+* `use` paths with `$crate` are not allowed in a [`macro_rules`] expansion.
+* `use` paths cannot refer to enum variants through a [type alias]. Example:
+  ```rust,compile_fail
+  enum MyEnum {
+      MyVariant
+  }
+  type TypeAlias = MyEnum;
+
+  use MyEnum::MyVariant; // OK
+  use TypeAlias::MyVariant; // ERROR
+  ```
+
+## Ambiguities
+
+> **Note**: This section is incomplete.
+
+Some situations are an error when there is an ambiguity as to which name a `use` declaration refers to, when there are two name candidates that do not resolve to the same entity.
+
+Glob imports are allowed to import conflicting names in the same namespaces as long as the name is not used or shadowed.
+Example:
+
+```rust
+mod foo {
+    pub struct Qux;
+}
+
+mod bar {
+    pub struct Qux;
+}
+
+use foo::*;
+use bar::*; // Ok, no name conflict.
+
+fn main() {
+    // This would be an error, due to the ambiguity.
+    // let x = Qux;
+}
+```
+
+Multiple glob imports are allowed to import the same name if the imports are of the same item (following re-exports). The visibility of the name is the maximum visibility of the imports. Example:
+
+```rust
+mod foo {
+    pub struct Qux;
+}
+
+mod bar {
+    pub use super::foo::Qux;
+}
+
+// These both import the same `Qux`.
+// The visibility of `Qux` is `pub` because that is the maximum
+// visibility between these two `use` declarations.
+use foo::*;
+pub use bar::*;
+# fn main() {}
+```
+
+If an in-scope item has the same name as a crate name in the [extern prelude], then `use` of that crate name requires a leading `::` to unambiguously select the crate name or `crate::` to use the item from the crate root.
+
+```rust,compile_fail
+use std::fs; // Error, this is ambiguous.
+
+mod std {
+    pub mod fs {}
+}
+# fn main() {}
+```
+
+
 [_SimplePath_]: ../paths.md#simple-paths
 [`extern crate`]: extern-crates.md
+[`macro_rules`]: ../macros-by-example.md
+[`self`]: ../paths.md#self
+[associated items]: associated-items.md
+[Attributes]: ../attributes.md
+[Built-in types]: ../types.md
+[Derive macros]: ../procedural-macros.md#derive-macros
+[Enum variants]: enumerations.md
 [extern prelude]: ../names/preludes.md#extern-prelude
-[path qualifiers]: ../paths.md#path-qualifiers
+[generic parameters]: generics.md
+[IDENTIFIER]: ../identifiers.md
+[items]: ../items.md
+[local variables]: ../variables.md
+[namespace]: ../names/namespaces.md
+[namespaces]: ../names/namespaces.md
+[paths]: ../paths.md
+[tool attributes]: ../attributes.md#tool-attributes
+[type alias]: type-aliases.md
+[type namespace]: ../names/namespaces.md

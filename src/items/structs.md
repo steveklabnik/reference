@@ -37,6 +37,7 @@
 > &nbsp;&nbsp; [_Type_]
 
 A _struct_ is a nominal [struct type] defined with the keyword `struct`.
+A struct declaration defines the given name in the [type namespace] of the module or block where it is located.
 
 An example of a `struct` item and its use:
 
@@ -46,11 +47,10 @@ let p = Point {x: 10, y: 11};
 let px: i32 = p.x;
 ```
 
-A _tuple struct_ is a nominal [tuple type], also defined with the keyword
-`struct`. For example:
-
-[struct type]: ../types/struct.md
-[tuple type]: ../types/tuple.md
+A _tuple struct_ is a nominal [tuple type], also defined with the keyword `struct`.
+In addition to defining a type, it also defines a constructor of the same name in the [value namespace].
+The constructor is a function which can be called to create a new instance of the struct.
+For example:
 
 ```rust
 struct Point(i32, i32);
@@ -59,7 +59,7 @@ let px: i32 = match p { Point(x, _) => x };
 ```
 
 A _unit-like struct_ is a struct without any fields, defined by leaving off the
-list of fields entirely. Such a struct implicitly defines a constant of its
+list of fields entirely. Such a struct implicitly defines a [constant] of its
 type with the same name. For example:
 
 ```rust
@@ -78,11 +78,15 @@ let c = [Cookie, Cookie {}, Cookie, Cookie {}];
 The precise memory layout of a struct is not specified. One can specify a
 particular layout using the [`repr` attribute].
 
-[`repr` attribute]: ../type-layout.md#representations
-
-[_OuterAttribute_]: ../attributes.md
-[IDENTIFIER]: ../identifiers.md
 [_GenericParams_]: generics.md
-[_WhereClause_]: generics.md#where-clauses
-[_Visibility_]: ../visibility-and-privacy.md
+[_OuterAttribute_]: ../attributes.md
 [_Type_]: ../types.md#type-expressions
+[_Visibility_]: ../visibility-and-privacy.md
+[_WhereClause_]: generics.md#where-clauses
+[`repr` attribute]: ../type-layout.md#representations
+[IDENTIFIER]: ../identifiers.md
+[constant]: constant-items.md
+[struct type]: ../types/struct.md
+[tuple type]: ../types/tuple.md
+[type namespace]: ../names/namespaces.md
+[value namespace]: ../names/namespaces.md

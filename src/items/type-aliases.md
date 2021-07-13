@@ -6,10 +6,9 @@
 >              ( `:` [_TypeParamBounds_] )<sup>?</sup>
 >              [_WhereClause_]<sup>?</sup> ( `=` [_Type_] )<sup>?</sup> `;`
 
-A _type alias_ defines a new name for an existing [type]. Type aliases are
-declared with the keyword `type`. Every value has a single, specific type, but
-may implement several different traits, or be compatible with several different
-type constraints.
+A _type alias_ defines a new name for an existing [type] in the [type namespace] of the module or block where it is located.
+Type aliases are declared with the keyword `type`.
+Every value has a single, specific type, but may implement several different traits, or be compatible with several different type constraints.
 
 For example, the following defines the type `Point` as a synonym for the type
 `(u8, u8)`, the type of pairs of unsigned 8 bit integers:
@@ -45,3 +44,4 @@ an [associated type] in a [trait].
 [associated type]: associated-items.md#associated-types
 [trait]: traits.md
 [type]: ../types.md
+[type namespace]: ../names/namespaces.md

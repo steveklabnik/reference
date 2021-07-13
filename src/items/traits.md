@@ -17,6 +17,9 @@ interface consists of [associated items], which come in three varieties:
 - [types](associated-items.md#associated-types)
 - [constants](associated-items.md#associated-constants)
 
+The trait declaration defines the trait in the [type namespace] of the module or block where it is located.
+Associated items are defined as members of the trait within their respective namespaces: type namespace for associated types, and value namespace for constants and functions.
+
 All traits define an implicit type parameter `Self` that refers to "the type
 that is implementing this interface". Traits may also contain additional type
 parameters. These type parameters, including `Self`, may be constrained by
@@ -341,3 +344,4 @@ fn main() {
 [`Rc<Self>`]: ../special-types-and-traits.md#rct
 [`async`]: functions.md#async-functions
 [`const`]: functions.md#const-functions
+[type namespace]: ../names/namespaces.md

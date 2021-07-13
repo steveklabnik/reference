@@ -43,8 +43,9 @@
 >   in an associated function of a [trait item] in the 2015 edition.
 
 A _function_ consists of a [block], along with a name and a set of parameters.
-Other than a name, all these are optional. Functions are declared with the
-keyword `fn`. Functions may declare a set of *input* [*variables*][variables]
+Other than a name, all these are optional.
+Functions are declared with the keyword `fn` which defines the given name in the [value namespace] of the module or block where it is located.
+Functions may declare a set of *input* [*variables*][variables]
 as parameters, through which the caller passes arguments into the function, and
 the *output* [*type*][type] of the value the function will return to its caller
 on completion.
@@ -412,4 +413,5 @@ fn foo_oof(#[some_inert_attribute] arg: u8) {
 [method]: associated-items.md#methods
 [associated function]: associated-items.md#associated-functions-and-methods
 [implementation]: implementations.md
+[value namespace]: ../names/namespaces.md
 [variadic function]: external-blocks.md#variadic-functions
