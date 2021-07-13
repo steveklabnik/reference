@@ -23,7 +23,7 @@
 > _MacroMatch_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; [_Token_]<sub>_except $ and delimiters_</sub>\
 > &nbsp;&nbsp; | _MacroMatcher_\
-> &nbsp;&nbsp; | `$` [IDENTIFIER] `:` _MacroFragSpec_\
+> &nbsp;&nbsp; | `$` [IDENTIFIER_OR_KEYWORD] `:` _MacroFragSpec_\
 > &nbsp;&nbsp; | `$` `(` _MacroMatch_<sup>+</sup> `)` _MacroRepSep_<sup>?</sup> _MacroRepOp_
 >
 > _MacroFragSpec_ :\
