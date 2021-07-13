@@ -41,6 +41,9 @@ evaluates to true or false. The predicate is one of the following:
   if at least one predicate is true. If there are no predicates, it is false.
 * `not()` with a configuration predicate. It is true if its predicate is false
   and false if its predicate is true.
+* `version()` with a version number inside. It is true if the language version
+  the compiler targets is higher or equal to the contained version number.
+  It is false otherwise.
 
 _Configuration options_ are names and key-value pairs that are either set or
 unset. Names are written as a single identifier such as, for example, `unix`.
@@ -208,6 +211,22 @@ production.  For example, it controls the behavior of the standard library's
 Set when the crate being compiled is being compiled with the `proc_macro`
 [crate type].
 
+## The `version()` predicate
+
+The `version()` predicate evaluates to true if both:
+
+* The version number contained inside follows the format and
+* The version number contained inside is less than or equal to the version
+  of the language the compiler targets. Usually the compiler version and
+  language version match. So compiler version `1.50.0` targets language
+  `1.50.0`.
+
+In order for it to be considered of valid format, the version number has to
+follow either the `"a.b.c"` scheme or the `"a.b"` scheme, where `a,b,c` are
+decimal integers between `0` and `65535`, inclusively. Semantically, assume `c`
+to be 0 if not present. Order wise, version numbers behave as if they were
+Rust tuples `(a,b,c)` with `a,b,c` being `u16` integers.
+
 ## Forms of conditional compilation
 
 ### The `cfg` attribute
@@ -251,6 +270,12 @@ fn on_32bit_unix() {
 // This function is only included when foo is not defined
 #[cfg(not(foo))]
 fn needs_not_foo() {
+  // ...
+}
+
+// This function is only included if the language version is newer than 1.50.0
+#[cfg(version("1.50.0"))]
+fn needs_new_compiler() {
   // ...
 }
 ```
