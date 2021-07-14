@@ -558,7 +558,7 @@ used with any other representation.
 [`Sized`]: ../std/marker/trait.Sized.html
 [`Copy`]: ../std/marker/trait.Copy.html
 [dynamically sized types]: dynamically-sized-types.md
-[field-less enums]: items/enumerations.md#custom-discriminant-values-for-fieldless-enumerations
+[field-less enums]: items/enumerations.md#field-less-enum
 [enumerations]: items/enumerations.md
 [zero-variant enums]: items/enumerations.md#zero-variant-enums
 [undefined behavior]: behavior-considered-undefined.md
