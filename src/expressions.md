@@ -156,7 +156,7 @@ The following contexts are *place expression* contexts:
 
 * The left operand of an [assignment][assign] or [compound assignment]
   expression.
-* The operand of a unary [borrow] or [dereference][deref] operator.
+* The operand of a unary [borrow], [address-of][addr-of], or [dereference][deref] operator.
 * The operand of a field expression.
 * The indexed operand of an array indexing expression.
 * The operand of any [implicit borrow].
@@ -293,6 +293,7 @@ They are never allowed before:
 
 [assign]:               expressions/operator-expr.md#assignment-expressions
 [borrow]:               expressions/operator-expr.md#borrow-operators
+[addr-of]:              expressions/operator-expr.md#raw-address-of-operators
 [comparison]:           expressions/operator-expr.md#comparison-operators
 [compound assignment]:  expressions/operator-expr.md#compound-assignment-expressions
 [deref]:                expressions/operator-expr.md#the-dereference-operator

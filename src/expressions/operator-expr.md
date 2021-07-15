@@ -71,6 +71,50 @@ let a = && && mut 10;
 let a = & & & & mut 10;
 ```
 
+### Raw address-of operators
+
+Related to the borrow operators are the *raw address-of operators*, which do not have first-class syntax, but are exposed via the macros `ptr::addr_of!(expr)` and `ptr::addr_of_mut!(expr)`.
+The expression `expr` is evaluated in place expression context.
+`ptr::addr_of!(expr)` then creates a (const) raw pointer of type `*const T` to the given place, and `ptr::addr_of_mut!(expr)` creates a mutable raw pointer of type `*mut T`.
+
+The raw address-of operators must be used instead of a borrow operator whenever the place expression could evaluate to a place that is not properly aligned or does not store a valid value as determined by its type, or whenever creating a reference would introduce incorrect aliasing assumptions.
+In those situations, using a borrow operator would cause [undefined behavior] by creating an invalid reference, but a raw pointer may still be constructed using an address-of operator.
+
+The following is an example of creating a raw pointer to an unaligned place through a `packed` struct:
+
+```rust
+use std::ptr;
+
+#[repr(packed)]
+struct Packed {
+    f1: u8,
+    f2: u16,
+}
+
+let packed = Packed { f1: 1, f2: 2 };
+// `&packed.f2` would create an unaligned reference, and thus be Undefined Behavior!
+let raw_f2 = ptr::addr_of!(packed.f2);
+assert_eq!(unsafe { raw_f2.read_unaligned() }, 2);
+```
+
+The following is an example of creating a raw pointer to a place that does not contain a valid value:
+
+```rust
+use std::{ptr, mem::MaybeUninit};
+
+struct Demo {
+    field: bool,
+}
+
+let mut uninit = MaybeUninit::<Demo>::uninit();
+// `&uninit.as_mut().field` would create a reference to an uninitialized `bool`,
+// and thus be Undefined Behavior!
+let f1_ptr = unsafe { ptr::addr_of_mut!((*uninit.as_mut_ptr()).field) };
+unsafe { f1_ptr.write(true); }
+let init = unsafe { uninit.assume_init() };
+```
+
+
 ## The dereference operator
 
 > **<sup>Syntax</sup>**\
@@ -538,6 +582,7 @@ See [this test] for an example of using this dependency.
 [float-float]: https://github.com/rust-lang/rust/issues/15536
 [Function pointer]: ../types/function-pointer.md
 [Function item]: ../types/function-item.md
+[undefined behavior]: ../behavior-considered-undefined.md
 
 [_BorrowExpression_]: #borrow-operators
 [_DereferenceExpression_]: #the-dereference-operator
