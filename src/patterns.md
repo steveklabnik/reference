@@ -405,6 +405,7 @@ match tuple {
 > **<sup>Syntax</sup>**\
 > _RangePattern_ :\
 > &nbsp;&nbsp; _RangePatternBound_ `..=` _RangePatternBound_
+> &nbsp;&nbsp; _RangePatternBound_ `..`
 >
 > _ObsoleteRangePattern_ :\
 > &nbsp;&nbsp; _RangePatternBound_ `...` _RangePatternBound_
@@ -417,9 +418,16 @@ match tuple {
 > &nbsp;&nbsp; | [_PathInExpression_]\
 > &nbsp;&nbsp; | [_QualifiedPathInExpression_]
 
-Range patterns match values that are within the closed range defined by its lower and
-upper bounds. For example, a pattern `'m'..='p'` will match only the values `'m'`, `'n'`,
-`'o'`, and `'p'`. The bounds can be literals or paths that point to constant values.
+Range patterns match values within the range defined by their bounds. A range pattern may be
+closed or half-open. A range pattern is closed if it has both a lower and an upper bound, and
+it matches all the values between and including both of its bounds. A range pattern that is
+half-open is written with a lower bound but not an upper bound, and matches any value equal to
+or greater than the specified lower bound.
+
+For example, a pattern `'m'..='p'` will match only the values `'m'`, `'n'`, `'o'`, and `'p'`. The
+pattern `1..` will match 9, or 9001, or 9007199254740991 (if it is of an appropriate size), but
+not 0 or negative numbers for signed integers. The bounds can be literals or paths that point
+to constant values.
 
 A pattern a `..=` b must always have a &le; b. It is an error to have a range pattern
 `10..=0`, for example.
@@ -452,6 +460,12 @@ println!("{}", match ph {
     8..=14 => "base",
     _ => unreachable!(),
 });
+
+# let uint: u32 = 5;
+match uint {
+    0 => "zero!",
+    1.. => "positive number!",
+};
 
 // using paths to constants:
 # const TROPOSPHERE_MIN : u8 = 6;

@@ -585,7 +585,7 @@ usages and meanings are defined in the linked pages.
 | `@`    | At          | [Subpattern binding]
 | `_`    | Underscore  | [Wildcard patterns], [Inferred types], Unnamed items in [constants], [extern crates], and [use declarations]
 | `.`    | Dot         | [Field access][field], [Tuple index]
-| `..`   | DotDot      | [Range][range], [Struct expressions], [Patterns]
+| `..`   | DotDot      | [Range][range], [Struct expressions], [Patterns], [Range Patterns][rangepat]
 | `...`  | DotDotDot   | [Variadic functions][extern], [Range patterns]
 | `..=`  | DotDotEq    | [Inclusive Range][range], [Range patterns]
 | `,`    | Comma       | Various separators
@@ -646,6 +646,7 @@ them are referred to as "token trees" in [macros].  The three types of brackets 
 [patterns]: patterns.md
 [question]: expressions/operator-expr.md#the-question-mark-operator
 [range]: expressions/range-expr.md
+[rangepat]: patterns.md#range-patterns
 [raw pointers]: types/pointer.md#raw-pointers-const-and-mut
 [references]: types/pointer.md
 [sized]: trait-bounds.md#sized
