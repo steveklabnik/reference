@@ -179,7 +179,7 @@ for i in -2..5 {
 
 Identifier patterns bind the value they match to a variable. The identifier
 must be unique within the pattern. The variable will shadow any variables of
-the same name in scope. The scope of the new binding depends on the context of
+the same name in scope. The [scope] of the new binding depends on the context of
 where the pattern is used (such as a `let` binding or a `match` arm).
 
 Patterns that consist of only an identifier, possibly with a `mut`, match any value and
@@ -839,6 +839,7 @@ result in a type mismatch between `x` in the different subpatterns.
 [IDENTIFIER]: identifiers.md
 [enums]: items/enumerations.md
 [literals]: expressions/literal-expr.md
+[scope]: names/scopes.md
 [structs]: items/structs.md
 [tuples]: types/tuple.md
 [scrutinee]: glossary.md#scrutinee

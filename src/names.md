@@ -13,7 +13,7 @@ Some entities are [explicitly declared](#explicitly-declared-entities) in the
 source code, and some are [implicitly declared](#implicitly-declared-entities)
 as part of the language or compiler extensions.
 
-[*Paths*] are used to refer to an entity, possibly in another scope. Lifetimes
+[*Paths*] are used to refer to an entity, possibly in another module or type. Lifetimes
 and loop labels use a [dedicated syntax][lifetimes-and-loop-labels] using a
 leading quote.
 

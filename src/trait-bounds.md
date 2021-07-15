@@ -147,7 +147,7 @@ fn call_on_ref_zero<F>(f: F) where for<'a> F: Fn(&'a i32) {
 ```
 
 Higher-ranked lifetimes may also be specified just before the trait, the only
-difference is the scope of the lifetime parameter, which extends only to the
+difference is the [scope][hrtb-scopes] of the lifetime parameter, which extends only to the
 end of the following trait instead of the whole bound. This function is
 equivalent to the last one.
 
@@ -167,6 +167,7 @@ fn call_on_ref_zero<F>(f: F) where F: for<'a> Fn(&'a i32) {
 
 [arrays]: types/array.md
 [associated types]: items/associated-items.md#associated-types
+[hrtb-scopes]: names/scopes.md#higher-ranked-trait-bound-scopes
 [supertraits]: items/traits.md#supertraits
 [generic]: items/generics.md
 [higher-ranked lifetimes]: #higher-ranked-trait-bounds

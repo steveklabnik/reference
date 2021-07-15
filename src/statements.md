@@ -29,7 +29,7 @@ statements.
 
 An *item declaration statement* has a syntactic form identical to an
 [item declaration][item] within a [module]. Declaring an item within a statement
-block restricts its scope to the block containing the statement. The item is not
+block restricts its [scope] to the block containing the statement. The item is not
 given a [canonical path] nor are any sub-items it may declare. The exception to
 this is that associated items defined by [implementations] are still accessible
 in outer scopes as long as the item and, if applicable, trait are accessible.
@@ -128,6 +128,7 @@ statement are [`cfg`], and [the lint check attributes].
 [`cfg`]: conditional-compilation.md
 [the lint check attributes]: attributes/diagnostics.md#lint-check-attributes
 [pattern]: patterns.md
+[scope]: names/scopes.md
 [_ExpressionStatement_]: #expression-statements
 [_Expression_]: expressions.md
 [_Item_]: items.md
