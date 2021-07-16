@@ -149,8 +149,8 @@ enabling or disabling compilation of code based on compile-time settings. Note
 that this option is not affected by the `target_feature` attribute, and is
 only driven by the features enabled for the entire crate.
 
-See the [`is_x86_feature_detected`] macro in the standard library for runtime
-feature detection on the x86 platforms.
+See the [`is_x86_feature_detected`] or [`is_aarch64_feature_detected`] macros
+in the standard library for runtime feature detection on these platforms.
 
 > Note: `rustc` has a default set of features enabled for each target and CPU.
 > The CPU may be chosen with the [`-C target-cpu`] flag. Individual features
@@ -268,6 +268,7 @@ trait object whose methods are attributed.
 [`-C target-cpu`]: ../../rustc/codegen-options/index.html#target-cpu
 [`-C target-feature`]: ../../rustc/codegen-options/index.html#target-feature
 [`is_x86_feature_detected`]: ../../std/macro.is_x86_feature_detected.html
+[`is_aarch64_feature_detected`]: ../../std/macro.is_aarch64_feature_detected.html
 [`target_feature` conditional compilation option]: ../conditional-compilation.md#target_feature
 [attribute]: ../attributes.md
 [attributes]: ../attributes.md
